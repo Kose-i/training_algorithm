@@ -1,8 +1,7 @@
-#include <stdlib.h>
 #include <iostream>
 #include <vector>
 
-#define M 1 // skip count
+#define M 2 // skip count
 
 typedef struct node *link;
 struct node {
