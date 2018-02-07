@@ -21,7 +21,7 @@ int main()
 {
   std::vector<int> target{3,2,4,5,3,7,1};
   sort(target);
-  for(int& e : target)
+  for(const int& e : target)
   {
     std::cout << e << ' ';
   }

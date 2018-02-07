@@ -31,7 +31,7 @@ int main()
 {
   std::vector<int> target{3,2,4,5,3,7,1};
   sort(target);
-  for(auto& e : target)
+  for(const auto e : target)
   {
     std::cout << e << ' ';
   }
