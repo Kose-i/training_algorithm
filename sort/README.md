@@ -5,3 +5,4 @@ quick-sort
 radix-sort
 heap-sort
 marge-sort
+comb-sort
