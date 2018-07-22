@@ -4,7 +4,6 @@
 
 double GaussLegendre(int n) {
   double a = 1.0, b = 1.0 / std::sqrt(2.0), t = 1.0 / 4, p = 1.0, tmp = 0;
-  double ret;
   for (int i = 0; i < n; i++) {
     tmp = a;
     a = (tmp + b) / 2;
@@ -15,7 +14,7 @@ double GaussLegendre(int n) {
   return (a + b) * (a + b) / (4 * t);
 }
 
-int main(void){
+int main(int argc, char** argv){
   std::cout << __func__ << '\n';
   std::cout << GaussLegendre(1) << '\n';
   std::cout << GaussLegendre(2) << '\n';

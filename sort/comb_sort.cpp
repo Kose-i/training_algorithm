@@ -7,33 +7,32 @@ void swap(int& a, int& b) {
   a = std::move(b);
   b = std::move(t);
 }
-void sort(std::vector<int>& a)
-{
-  int search_duration = a.size() / 1.3;
+namespace kosei{
+  void sort(std::vector<int>& a) {
+    int search_duration = a.size() / 1.3;
 
-  for (bool is_changed = true;search_duration > 1 || is_changed == true;) {
-    is_changed = false;
+    for (bool is_changed = true;search_duration > 1 || is_changed == true;) {
+      is_changed = false;
       if (search_duration == 1) {
         search_duration = a.size() / 1.3;
       } else {
         --search_duration;
       }
 
-    for (auto i = 0;i < a.size() - search_duration;++i) {
-      if (a[i + search_duration] < a[i]) {
-        swap(a[i], a[i + search_duration]);
-        is_changed = true;
+      for (auto i = 0;i < a.size() - search_duration;++i) {
+        if (a[i + search_duration] < a[i]) {
+          swap(a[i], a[i + search_duration]);
+          is_changed = true;
+        }
       }
     }
   }
-}
+};
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   std::vector<int> target{3,2,4,5,3,7,1};
-  sort(target);
-  for(const int& e : target)
-  {
+  kosei::sort(target);
+  for(const int& e : target) {
     std::cout << e << ' ';
   }
   std::cout << '\n';
