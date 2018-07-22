@@ -2,30 +2,25 @@
 #include <vector>
 
 typedef struct tree* link;
-struct tree
-{
+struct tree {
   int item;
   link right_link;
   link left_link;
 };
-void add_tree(std::vector<struct tree>& node, const int new_item)
-{
-  if(node.size() == 0)
-  {
+void add_tree(std::vector<struct tree>& node, const int new_item) {
+  if (node.size() == 0) {
     struct tree prime;
     prime.item = new_item;
     prime.right_link = nullptr;
     prime.left_link = nullptr;
     node.push_back(prime);
-  }
-  else{
+  } else {
     link pos = &node[0];
-    while(true)
-    {
-      if((*pos).item < new_item)
-      {
-        if((*pos).right_link != nullptr){pos = (*pos).right_link;}
-        else{
+    while (true) {
+      if((*pos).item < new_item) {
+        if( (*pos).right_link != nullptr) {
+          pos = (*pos).right_link;
+        } else {
           struct tree prime;
           prime.item = new_item;
           prime.right_link = nullptr;
@@ -34,10 +29,10 @@ void add_tree(std::vector<struct tree>& node, const int new_item)
           (*pos).right_link = (&(node[node.size() - 1]));
           break;
         }
-      }
-      else {
-        if((*pos).left_link != nullptr){pos = (*pos).left_link;}
-        else{
+      } else {
+        if((*pos).left_link != nullptr) {
+          pos = (*pos).left_link;
+        } else{
           struct tree prime;
           prime.item = new_item;
           prime.right_link = nullptr;
@@ -62,12 +57,10 @@ void print_sort_data(link pos)
   print_sort_data((*pos).right_link);
   std::cout << "right checked\n";
 }
-int main()
-{  
+int main() {
   std::vector<int> target{3,2,4,5,3,7,1};
   std::vector<struct tree> node;
-  for(const int& e : target)
-  {
+  for (const int& e : target) {
     std::cout << e << ' ';
     add_tree(node,e);
   }

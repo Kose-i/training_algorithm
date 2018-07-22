@@ -3,34 +3,28 @@
 #include <string>
 #include <tuple>
 
-void make_group(std::vector<int>& number, std::vector<std::tuple<std::string,int,int>> target)
-{
-  for(int i = 0;i < target.size();++i){
-    if(std::get<0>(target[i]) == "group")
-    {
-      int t,m;
+void make_group(std::vector<int>& number, std::vector<std::tuple<std::string,int,int>> target) {
+  for(int i {};i < target.size();++i) {
+    if(std::get<0>(target[i]) == "group") {
+      int t{},m{};
       for(t = std::get<1>(target[i]);t != number[t] ;t = number[t]);
       for(m = std::get<2>(target[i]);m != number[m] ;m = number[m]);
       if(t == m)continue;
       number[t] = m;
-    }
-    else if(std::get<0>(target[i]) == "search")
-    {
-      int t,m;
+    } else if(std::get<0>(target[i]) == "search") {
+      int t{},m{};
       for(t = std::get<1>(target[i]);t != number[t] ;t = number[t]);
       for(m = std::get<2>(target[i]);m != number[m] ;m = number[m]);
-      if(t == m)
-      {
+      if(t == m) {
         std::cout << "same group\n";
-      }
-      else{
+      } else {
         std::cout << "not same group\n";
       }
     }
   }
 }
-int main()
-{
+
+int main() {
   std::vector<std::tuple<std::string,int,int>> target(10);
   target[0] = std::make_tuple("group",1,3);
   target[1] = std::make_tuple("group",5,2);
@@ -43,8 +37,7 @@ int main()
   target[8] = std::make_tuple("group",2,6);
   target[9] = std::make_tuple("search",4,5);
   std::vector<int> group(10);
-  for(int i = 0;i < group.size();++i)
-  {
+  for(int i {};i < group.size();++i) {
     group[i] = i;
   }
   make_group(group,target);
