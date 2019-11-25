@@ -16,9 +16,17 @@ namespace coins_answer{
     if (C < minimum_50s) {
       return 0;
     }
-    unsigned count {1};
-    500s -> 100*5 -> 50*10 => 6
-    100s -> 50*2 => 1
+    unsigned count {};
+    for (auto t = 0; t <= minimum_500s ;++t) {
+      for (auto s = 0; s <= minimum_100s + 5*minimum_500s - 5*t && s <= B; ++s) {
+        if (C < minimum_50s + 10*minimum_500s - 10*t + 2*minimum_100s - 2*s) {
+          continue;
+        } else {
+          ++count;
+        }
+      }
+    }
+    return count;
   }
 }
 
