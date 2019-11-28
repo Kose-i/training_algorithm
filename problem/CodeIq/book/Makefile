@@ -1,5 +1,5 @@
 
-SRC = prob48.cpp
+SRC = prob51.cpp
 
 all:main
 
