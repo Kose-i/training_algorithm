@@ -17,7 +17,9 @@ void swap(int& t1, int& t2) {
   t1 = t2;
   t2 = tmp;
 }
-int solve(const int& N, const int& R, std::vector<edge>& G, std::vector<int>& dist, std::vector<int>& dist2) {
+int solve(const int& N, const int& R, std::vector<edge>& G) {
+  std::vector<int> dist(MAX_N);
+  std::vector<int> dist2(MAX_N);
   std::priority_queue<Pair, std::vector<Pair>, std::greater<Pair>> que;
   for (auto& e : dist) e = INF;
   for (auto& e : dist2) e = INF;
@@ -26,28 +28,47 @@ int solve(const int& N, const int& R, std::vector<edge>& G, std::vector<int>& di
 
   while (!que.empty()) {
     Pair p = que.top(); que.pop();
-    int v = p.second, d = p.first;
+    int d = p.first;  // cost
+    int v = p.second; // pos
     if (dist2[v] < d) continue;
-    for (auto i = 0;i < G[v].size(); ++i) {
-      edge &e = G[v][i];
-      int d2 = d + e.cost;
-      if (dist[e.to] > d2) {
-        swap(dist[e.to], d2);
-        que.push(Pair(dist[e.to], e.to));
-      }
-      if (dist2[e.to] > d2 && dist[e.to] < d2) {
-        dist2[e.to] = d2;
-        que.push(Pair(dist2[e.to], e.to));
+    for (const auto& e : G) {
+      if (e.from == v) {
+        int d2 = d + e.cost;//e.to のコスト
+        if (dist[e.to] > d2) {
+          swap(dist[e.to], d2);
+          que.push(Pair(dist[e.to], e.to));
+        }
+        if (d2 < dist2[e.to] && dist[e.to] < d2) { // dist[e.to] != d2
+          dist[e.to] = d2;
+          que.push(Pair(dist2[e.to], e.to));
+        }
+      } else if (e.to == v) {
+        int d2 = d + e.cost;//e.from のコスト
+        if (dist[e.from] > d2) {
+          swap(dist[e.from], d2);
+          que.push(Pair(dist[e.from], e.from));
+        }
+        if (d2 < dist2[e.from] && dist[e.from] < d2) { // dist[e.from] != d2
+          dist[e.from] = d2;
+          que.push(Pair(dist2[e.from], e.from));
+        }
       }
     }
   }
   return dist2[N-1];
 }
 int main(int argc, char** argv) {
-  std::vector<edge> G(MAX_N);
-  std::vector<int> dist(MAX_N);
-  std::vector<int> dist2(MAX_N);
-  int N {5};
-  int R {3};
-  std::cout << solve(N, R, G, dist, dist2) << '\n';
+  std::vector<edge> G;
+  edge t;
+  t.from = 1; t.to = 2; t.cost = 100;
+  G.push_back(t);
+  t.from = 2; t.to = 3; t.cost = 250;
+  G.push_back(t);
+  t.from = 2; t.to = 4; t.cost = 200;
+  G.push_back(t);
+  t.from = 3; t.to = 4; t.cost = 100;
+  G.push_back(t);
+  int N {4};
+  int R {4};
+  std::cout << solve(N, R, G) << '\n';
 }
