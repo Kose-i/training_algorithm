@@ -2,10 +2,9 @@
 #include <vector>
 #include <queue>
 #include <utility>
-#include <limits>
 
 using Pair = std::pair<int, int>;
-constexpr int INF {std::numeric_limits<int>::max()};
+constexpr int INF {500000};
 struct edge{
   int from, to;
   int cost;
@@ -18,11 +17,9 @@ void swap(int& t1, int& t2) {
   t2 = tmp;
 }
 int solve(const int& N, const int& R, std::vector<edge>& G) {
-  std::vector<int> dist(MAX_N);
-  std::vector<int> dist2(MAX_N);
+  std::vector<int> dist(N, INF);
+  std::vector<int> dist2(N, INF);
   std::priority_queue<Pair, std::vector<Pair>, std::greater<Pair>> que;
-  for (auto& e : dist) e = INF;
-  for (auto& e : dist2) e = INF;
   dist[0] = 0;
   que.push(Pair(0, 0));
 
@@ -39,7 +36,7 @@ int solve(const int& N, const int& R, std::vector<edge>& G) {
           que.push(Pair(dist[e.to], e.to));
         }
         if (d2 < dist2[e.to] && dist[e.to] < d2) { // dist[e.to] != d2
-          dist[e.to] = d2;
+          dist2[e.to] = d2;
           que.push(Pair(dist2[e.to], e.to));
         }
       } else if (e.to == v) {
@@ -60,13 +57,13 @@ int solve(const int& N, const int& R, std::vector<edge>& G) {
 int main(int argc, char** argv) {
   std::vector<edge> G;
   edge t;
-  t.from = 1; t.to = 2; t.cost = 100;
+  t.from = 0; t.to = 1; t.cost = 100;
   G.push_back(t);
-  t.from = 2; t.to = 3; t.cost = 250;
+  t.from = 1; t.to = 2; t.cost = 250;
   G.push_back(t);
-  t.from = 2; t.to = 4; t.cost = 200;
+  t.from = 1; t.to = 3; t.cost = 200;
   G.push_back(t);
-  t.from = 3; t.to = 4; t.cost = 100;
+  t.from = 2; t.to = 3; t.cost = 100;
   G.push_back(t);
   int N {4};
   int R {4};
