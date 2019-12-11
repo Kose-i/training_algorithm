@@ -25,7 +25,7 @@ void answer(const int& N_node, const std::vector<edge>& vec_path) {
     if (group[e.from] != group[e.to]) {
       {//group
         int tmp = group[e.to];
-        for (auto f : group) {
+        for (auto& f : group) {
           if (f == tmp) f = group[e.from];
         }
       }
