@@ -8,46 +8,51 @@ struct query{
 };
 
 void add_BIT(const int& left, const int& right, const int& x, std::vector<int>& BIT_tree) {
-  int i = left;
-  while (i < right) {
-    BIT_tree[i] += x;
-    //i += (i &(-i));
-    i += 1;
+  int BIT_tree_size = BIT_tree.size();
+  for (auto l = left;l < right;++l) {
+    auto i = l;
+    while (i < BIT_tree_size) {
+      BIT_tree[i] += x;
+      i += (i &(-i));
+    }
   }
 }
 
 int sum_BIT(const int& left, const int& right, const std::vector<int>& BIT_tree) {
-  return 1;
+  int s {};
+  int i {right};
+  while (i > 0) {
+    s += BIT_tree[i];
+    i -= i&(-i);
+  }
+  i = left;
+  while (i > 0) {
+    s -= BIT_tree[i];
+    i -= i&(-i);
+  }
+  return s;
 }
 void print_BIT(const std::vector<int>& BIT_tree) {
   int tree_size = BIT_tree.size();
   for (auto i = 0;i < tree_size;++i) {
-    int c {BIT_tree[i]};
-    if (i % 2 != 0) {
-      c -= BIT_tree[i/2];
-      c -= BIT_tree[i -2];
-    }
+    int c {sum_BIT(i, i+1, BIT_tree)};
     std::cout << c << ' ';
   }
   std::cout << '\n';
 }
 void answer(const int& vec_size, const std::vector<int>& vec, const std::vector<query>& q) {
-  std::cout << "answer\n";
-  std::vector<int> BIT_tree(vec_size, 0);
+  std::vector<int> BIT_tree(vec_size+1, 0);
   for (auto i = 0;i < vec_size;++i) {
-    add_BIT(i, i+1, vec[i], BIT_tree);
+    add_BIT(i+1, i+2, vec[i], BIT_tree);
   }
-  print_BIT(BIT_tree);
-  return;
   for (const auto& q_elem : q) {
     if (q_elem.is_add == true ) {
-      add_BIT(q_elem.l, q_elem.r, q_elem.x, BIT_tree);
+      add_BIT(q_elem.l+1, q_elem.r+1, q_elem.x, BIT_tree);
     } else {
-      int sum = sum_BIT(q_elem.l, q_elem.r, BIT_tree);
+      int sum = sum_BIT(q_elem.l+1, q_elem.r+1, BIT_tree);
       std::cout << sum << '\n';
     }
   }
-  print_BIT(BIT_tree);
 }
 int main(int argc, char** argv) {
   const int N {8};
