@@ -36,11 +36,11 @@ unsigned long long answer(const unsigned long long& N, const Point& initial_pos,
     }
     unsigned long long max_turn {};
     for (const auto& e : vec_edge) {
-      if (e.u < e.v) {
-        max_turn = max_func(max_turn,e.v);
+      if (e.v > max_turn) {
+        max_turn = e.v;
       }
     }
-    return max_turn;
+    return max_turn-1;
   }
 }
 
