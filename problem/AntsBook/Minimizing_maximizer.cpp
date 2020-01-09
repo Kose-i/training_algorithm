@@ -13,7 +13,7 @@ int answer(const int& n, const int& m, const std::vector<Pair>& st){
   std::vector<int> dp(n+1, INF);
   for (auto i = 0;i < m;++i) {
     int v = min(dp[st[i].t], query(st[i].s, st[i].t + 1) + 1 );
-    dp[st[i]] = v;
+    dp[st[i].t] = v;
     update(st[i].t, v);
   }
   return dp[n];
