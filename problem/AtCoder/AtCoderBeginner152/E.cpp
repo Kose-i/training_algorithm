@@ -1,68 +1,51 @@
 #include <iostream>
 #include <vector>
-#include <bitset>
 
-//constexpr int Max_num {1000000};
-constexpr int Max_num {10};
-constexpr int mod_target {1000000007};
-std::vector<int> prime_num() {
-  std::bitset<Max_num+1> prime;
-  for (auto i = 2;i <= Max_num;++i) {
-    prime[i] = 1;
-  }
-  for (auto i = 2;i < Max_num/2;++i) {
-    if (prime[i] == 0) continue;
-    for (auto j = 2;i*j <= Max_num;++j) {
-      prime[i*j] = 0;
+struct Sieve{
+  int n;
+  std::vector<int> f, primes;
+  Sieve(int n): n(n), f(n+1, 1) {
+    f[0] = f[1] = 0;
+    for (auto i = 2;i <= n;++i) {
+      if (f[i]) continue;
+      primes.push_back(i);
+      f[i] = i;
+      for (ll j = i*i;j <= n;j += i) {
+        if (!f[j]) f[j] = i;
+      }
     }
   }
-  std::vector<int> prime_box;
-  for (auto i = 2;i <= Max_num;++i) {
-    if (prime[i] == 1) prime_box.push_back(i);
+  bool isPrime(int x) {return f[x] == x;}
+  std::vector<int> factorList(int x) {
+    std::vector<int> res;
+    while (x != 0) {
+      res.push_back(f[x]);
+      x /= f[x];
+    }
+    return res;
   }
-  return prime_box;
-}
-constexpr int max(int a, int b) {
-  return (a>b)?a:b;
-}
-
+  std::vector<P> factor(int x) {
+    std::vector<int> fl = factorList(x);
+    if (fl.size() == 0) return {};
+    std::vector<P> res(1, P(fl[0], 0));
+    for (int p : fl) {
+      if (res.back.first == p) {
+        ++res.back.second;
+      } else {
+        res.emplace_back(p, 1);
+      }
+    }
+    return res;
+  }
+};
 int main(int argc, char** argv) {
-  int N;
-  std::cin >> N;
-  std::vector<int> A(N);
-  for (auto& e : A) std::cin >> e;
-  std::vector<int> prime = prime_num();
-  int prime_box_size = prime.size();
-  std::vector<std::vector<int>> A_prime(N, std::vector<int>(prime_box_size, 0));
-  for (auto i = 0;i < N;++i) {
-    for (auto j = 0;j < prime_box_size;++j) {
-      while (A[i]%prime[j] == 0) {
-        ++A_prime[i][j];
-        A[i] /= prime[j];
-      }
-      if (A[i] == 1) break;
-    }
+  int n;
+  std::cin >> n;
+  Sieve sieve(n);
+  std::vector<int> A(n);
+  for (int& e : A) std::cin >> e;
+  std::vector<P> c;
+  for (auto i = 0;i < n+1;++i) {
+    std::vector<P> fact = sieve.factor(A[i]);
   }
-  for (auto& e : prime) {
-    e %= mod_target;
-  }
-  std::vector<int> max_A_prime(prime_box_size, 0);
-  for (auto i = 0;i < prime_box_size;++i) {
-    for (auto j = 0;j < N;++j) {
-      max_A_prime[i] = max(max_A_prime[i], A_prime[j][i]);
-    }
-  }
-  unsigned long sum {};
-  for (auto i = 0;i < N;++i) {
-    unsigned long tmp_sum {1};
-    for (auto j = 0;j < prime_box_size;++j) {
-      for (int k = max_A_prime[j] - A_prime[i][j];k > 0;--k) {
-        tmp_sum *= prime[j];
-        tmp_sum %= mod_target;
-      }
-    }
-    sum += tmp_sum;
-    sum %= mod_target;
-  }
-  std::cout << sum << '\n';
 }
