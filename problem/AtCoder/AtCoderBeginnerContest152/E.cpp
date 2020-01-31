@@ -1,83 +1,103 @@
 #include <iostream>
 #include <vector>
-#include <bitset>
-#include <cmath>
+#include <utility>
 
-constexpr int max_number{1000000};
+constexpr int mod {1000000007};
+constexpr int Max_num {100000+1};
 
-struct Pair{
-  int num;
-  int cnt;
+using P = std::pair<unsigned, unsigned>;
+
+struct mint {
+  long long x;
+  mint(ll x =0) : x((x%mod+mod)%mod) {}
+  mint operator-() const { return mint(-x);}
+  mint& operator+=(const mint a) {
+    if ((x += a.x) >= mod) x -= mod;
+    return *this;
+  }
+  mint& operator-=(const mint a) {
+    if ((x += mod-a.x) >= mod) x -= mod;
+    return *this;
+  }
+  mint& operator*=(const mint a) {
+    (x *= a.x) %= mod;
+    return *this;
+  }
+  mint operator+(const mint a) const {
+    mint res(*this);
+    return res += a;
+  }
+  mint operator-(const mint a) const {
+    mint res(*this);
+    return res -= a;
+  }
+  mint operator*(const mint a) const {
+    mint res(*this);
+    return res *= a;
+  }
+  mint pow(long long t) const {
+    if (!t) return 1;
+    mint a = pow(t>>1);
+    a *= a;
+    if (t & 1) a *= *this;
+    return a;
+  }
+
+  //for prime mod
+  mint inv() const {
+    return pow(mod-2);
+  }
+  mint& operator/=(const mint a) {
+    mint res(*this);
+    return res /= a;
+  }
+  mint operator/(const mint a) const {
+    mint res(*this);
+    return res /= a;
+  }
 };
 
-std::vector<int> get_prime_box() {
-  std::bitset<max_number+1> prime;
-  prime.flip();
-  prime[0] = prime[1] = 0;
-  for (auto i = 2;i <= max_number;++i) {
-    if (prime[i] == 1) {
-      for (auto j = i+i;j <= max_number;j += i) {
-        prime[j] = 0;
+class Prime_Decomposition{
+  public:
+  Prime_Decomposition() {
+    get_prime();
+  }
+  std::vector<P> decomposition(long long a) {
+    std::vector<P> num_prime_decomposition;
+    for (auto i = 0;i < Max_num;++i) {
+      if (a == 1) break;
+      if (a % prime_box[i] == 0) {
+        P t;
+        t.first = prime_box[i];
+        t.second = 0;
+        for (;a % prime_box[i] == 0;a /= prime_box[i]) {
+          ++t.second;
+        }
+        num_prime_decomposition.push_back(t);
       }
     }
+    return num_prime_decomposition;
   }
-  std::vector<int> vec_box;
-  for (auto i = 2;i <= max_number;++i) {
-    if (prime[i] == 1) vec_box.push_back(i);
+  private:
+  void get_prime() {
+    std::bitset<Max_num> bi;
+    bi.flip();
+    bi[0] = bi[1] = 0;
+    for (auto i = 0;i < Max_num;++i) {
+      if (bit_prime[i] == 0) continue;
+      for (auto j = i+i;j < Max_num;j += i) {
+        bit_prime[j] = 0;
+      }
+    }
+    for (auto i = 0;i < Max_num;++i) {
+      if (bit_prime[i] == 1) prime_box.push_back(i);
+    }
   }
-  return vec_box;
-}
-
+  std::vector<unsigned> prime_box;
+};
 int main(int argc, char** argv) {
   int N;
   std::cin >> N;
-  std::vector<long long> A(N);
+  std::vector<int> A(N);
   for (auto& e : A) std::cin >> e;
-  std::vector<long long> A_cp = A;
-  std::vector<int> prime_box = get_prime_box();
-
-  std::vector<std::vector<Pair>> prime_factor(N, std::vector<Pair>());
-  for (auto i = 0;i < N;++i) {
-    for (auto& prime : prime_box) {
-      if (A_cp[i] % prime == 0) {
-        Pair k{prime, 0};
-        while (A_cp[i] % prime == 0) {
-          A_cp[i] /= prime;
-          ++k.cnt;
-        }
-        prime_factor[i].push_back(k);
-      }
-    }
-  }
-
-  std::vector<Pair> max_prime_factor;
-  for (const auto& e : prime_factor) {
-    for (const auto& f : e) {
-      bool is_find = false;
-      for (auto& c : max_prime_factor) {
-        if (c.num == f.num) {
-          c.cnt = std::max(c.cnt, f.cnt);
-          is_find = true;
-        }
-      }
-      if (is_find == false) {
-        max_prime_factor.push_back(f);
-      }
-    }
-  }
-  unsigned long long L {1};
-  constexpr unsigned long long mod_target{1000000007};
-  for (const auto& e : max_prime_factor) {
-    int k {e.cnt};
-    while (k > 0) {
-      L *= e.num;
-      --k;
-    }
-  }
-  unsigned long long sum {};
-  for (const auto& e : A) {
-    sum += (L/e)%mod_target;
-    sum %= mod_target;
-  }
-  std::cout << sum << '\n';
 }
