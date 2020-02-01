@@ -1,0 +1,3 @@
+[submodule "problem/problem/library"]
+	path = problem/problem/library
+	url = https://github.com/atcoder-live/library.git
