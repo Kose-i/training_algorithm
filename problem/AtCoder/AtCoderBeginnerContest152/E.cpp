@@ -1,15 +1,20 @@
 #include <iostream>
-#include <vector>
 #include <utility>
+#include <vector>
+#include <map>
+#include <numeric>
 
+/*snuke*/
+
+#define rep(i,n) for (int i = 0; i < (n); ++i)
+
+using ll = long long;
+using P = std::pair<int,int>;
+ 
 constexpr int mod {1000000007};
-constexpr int Max_num {100000+1};
-
-using P = std::pair<unsigned, unsigned>;
-
 struct mint {
-  long long x;
-  mint(ll x =0) : x((x%mod+mod)%mod) {}
+  ll x; // typedef long long ll;
+  mint(ll x=0):x((x%mod+mod)%mod){}
   mint operator-() const { return mint(-x);}
   mint& operator+=(const mint a) {
     if ((x += a.x) >= mod) x -= mod;
@@ -25,79 +30,103 @@ struct mint {
   }
   mint operator+(const mint a) const {
     mint res(*this);
-    return res += a;
+    return res+=a;
   }
   mint operator-(const mint a) const {
     mint res(*this);
-    return res -= a;
+    return res-=a;
   }
   mint operator*(const mint a) const {
     mint res(*this);
-    return res *= a;
+    return res*=a;
   }
-  mint pow(long long t) const {
+  mint pow(ll t) const {
     if (!t) return 1;
     mint a = pow(t>>1);
     a *= a;
-    if (t & 1) a *= *this;
+    if (t&1) a *= *this;
     return a;
   }
-
-  //for prime mod
+ 
+  // for prime mod
   mint inv() const {
     return pow(mod-2);
   }
   mint& operator/=(const mint a) {
-    mint res(*this);
-    return res /= a;
+    return (*this) *= a.inv();
   }
   mint operator/(const mint a) const {
     mint res(*this);
-    return res /= a;
+    return res/=a;
   }
 };
-
-class Prime_Decomposition{
-  public:
-  Prime_Decomposition() {
-    get_prime();
-  }
-  std::vector<P> decomposition(long long a) {
-    std::vector<P> num_prime_decomposition;
-    for (auto i = 0;i < Max_num;++i) {
-      if (a == 1) break;
-      if (a % prime_box[i] == 0) {
-        P t;
-        t.first = prime_box[i];
-        t.second = 0;
-        for (;a % prime_box[i] == 0;a /= prime_box[i]) {
-          ++t.second;
-        }
-        num_prime_decomposition.push_back(t);
+ 
+ 
+struct Sieve {
+  int n;
+  std::vector<int> f, primes;
+  Sieve(int n=1):n(n), f(n+1) {
+    f[0] = f[1] = -1;
+    for (ll i = 2; i <= n; ++i) {
+      if (f[i]) continue;
+      primes.push_back(i);
+      f[i] = i;
+      for (ll j = i*i; j <= n; j += i) {
+        if (!f[j]) f[j] = i;
       }
     }
-    return num_prime_decomposition;
   }
-  private:
-  void get_prime() {
-    std::bitset<Max_num> bi;
-    bi.flip();
-    bi[0] = bi[1] = 0;
-    for (auto i = 0;i < Max_num;++i) {
-      if (bit_prime[i] == 0) continue;
-      for (auto j = i+i;j < Max_num;j += i) {
-        bit_prime[j] = 0;
+  bool isPrime(int x) { return f[x] == x;}
+  std::vector<int> factorList(int x) {
+    std::vector<int> res;
+    while (x != 1) {
+      res.push_back(f[x]);
+      x /= f[x];
+    }
+    return res;
+  }
+  std::vector<P> factor(int x) {
+    std::vector<int> fl = factorList(x);
+    if (fl.size() == 0) return {};
+    std::vector<P> res(1, P(fl[0], 0));
+    for (int p : fl) {
+      if (res.back().first == p) {
+        res.back().second++;
+      } else {
+        res.emplace_back(p, 1);
       }
     }
-    for (auto i = 0;i < Max_num;++i) {
-      if (bit_prime[i] == 1) prime_box.push_back(i);
-    }
+    return res;
   }
-  std::vector<unsigned> prime_box;
 };
+ 
 int main(int argc, char** argv) {
-  int N;
-  std::cin >> N;
-  std::vector<int> A(N);
-  for (auto& e : A) std::cin >> e;
+  Sieve sieve(1000000);
+  int n;
+  std::cin >> n;
+  std::vector<int> a(n);
+  rep(i,n) std::cin >> a[i];
+ 
+  std::map<int,int> mp;
+  rep(i,n) {
+    auto f = sieve.factor(a[i]);
+    for (auto p : f) {
+      mp[p.first] = std::max(mp[p.first], p.second);
+    }
+  }
+ 
+  mint lcm = 1;
+  for (auto p : mp) {
+    rep(i,p.second) {
+      lcm *= p.first;
+    }
+  }
+ 
+  mint ans;
+  rep(i,n) {
+    mint b = lcm/a[i];
+    ans += b;
+  }
+  std::cout << ans.x << '\n';
+  return 0;
 }
