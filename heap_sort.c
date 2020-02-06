@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
     for (int i = 1;i < N;++i) {
         for (link now = start;now != NULL;) {
-            if ((now->value) < (tree[i].value)) {
+            if ((now->value) <= (tree[i].value)) {
                 if (now->right == NULL) {
                     now->right = &tree[i];
                     break;
