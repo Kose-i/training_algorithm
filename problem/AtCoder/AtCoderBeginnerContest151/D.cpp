@@ -1,56 +1,70 @@
 #include <iostream>
 #include <vector>
-
-using namespace std;
-
-int H, W;
-constexpr int max(int a, int b) {
-  return (a<b)?b:a;
-}
-constexpr int INF {10000000};
-
-void plot_maze(vector<vector<char>>& maze, vector<vector<int>>& dp) {
-  for (auto i = 0;i < H*W;++i) dp[i][i] = 0;
-  for (auto i = 0;i < H;++i) {
-    for (auto j = 0;j < W;++j) {
-      if (i != 0) dp[W*i+j][W*(i-1)+j] = (maze[i-1][j]=='#')?INF:1;
-      if (i != H-1) dp[W*i+j][W*(i+1)+j] = (maze[i+1][j]=='#')?INF:1;
-      if (j != 0) dp[W*i+j][W*i+(j-1)] = (maze[i][j-1]=='#')?INF:1;
-      if (j != W-1) dp[W*i+j][W*i+(j+1)] = (maze[i][j+1]=='#')?INF:1;
-    }
-  }
-}
+#include <map>
+#include <limits>
+#include <cmath>
+//#include <iomanip> // BUILD
 
 int main(int argc, char** argv) {
-  cin >> H >> W;
-  vector<vector<char>> maze(H, vector<char>(W, 0));
-  for (auto i = 0;i < H;++i) {
-    for (auto j = 0;j < W;++j) {
-      cin >> maze[i][j];
+  int H, W;
+  std::cin >> H >> W;
+  std::vector<std::vector<char>> map(H, std::vector<char>(W));
+  for (auto& e : map) {
+    for (auto& f : e) {
+      std::cin >> f;
     }
   }
-  vector<vector<int>> dp(H*W, vector<int>(H*W, INF));
-  plot_maze(maze, dp);
-  while (true) {
-    bool is_update = false;
-    for (auto i = 0;i < W*H;++i) {
-      for (auto j = 0;j < W*H;++j) {
-        for (auto k = 0;k < W*H;++k) {
-          if (dp[i][j] > dp[i][k]+dp[k][j]) {
+  int node_cnt {H*W};
+  std::vector<std::vector<int>> dp(node_cnt, std::vector<int>(node_cnt, std::numeric_limits<int>::max()));
+  for (auto i = 0;i < H;++i) {
+    for (auto j = 0;j < W;++j) {
+      if (map[i][j] == '.') {
+        if (i-1>=0 && map[i-1][j] == '.') {
+          dp[W*i+j][W*(i-1)+j] = 1;
+          dp[W*(i-1)+j][W*i+j] = 1;
+        }
+        if (i+1<H && map[i+1][j] == '.') {
+          dp[W*i+j][W*(i+1)+j] = 1;
+          dp[W*(i+1)+j][W*i+j] = 1;
+        }
+        if (j-1>=0 && map[i][j-1] == '.') {
+          dp[W*i+j][W*i+(j-1)] = 1;
+          dp[W*i+(j-1)][W*i+j] = 1;
+        }
+        if (j+1<W && map[i][j+1] == '.') {
+          dp[W*i+j][W*i+(j+1)] = 1;
+          dp[W*i+(j+1)][W*i+j] = 1;
+        }
+      } else {//map[i][j] == '#'
+        for (auto k = 0;k < node_cnt;++k) dp[W*i+j][k] = -1;
+        for (auto k = 0;k < node_cnt;++k) dp[k][W*i+j] = -1;
+      }
+    }
+  }
+  for (bool is_update = true;is_update == true;) {
+    is_update = false;
+    for (auto i = 0;i < node_cnt;++i) {
+      for (auto j = 0;j < node_cnt;++j) {
+        if (i == j) continue;
+        if (dp[i][j] == -1) continue;
+        for (auto k = 0;k < node_cnt;++k) {
+          if (dp[i][k] == std::numeric_limits<int>::max() || dp[k][j] == std::numeric_limits<int>::max()) continue;
+          if (dp[i][k] == -1 || dp[k][j] == -1) continue;
+          if (dp[i][k] + dp[k][j] < dp[i][j]) {
             dp[i][j] = dp[i][k] + dp[k][j];
             is_update = true;
           }
         }
       }
     }
-    if (is_update == false) break;
   }
-  int max_tmp {};
+  int max_turn {};
   for (const auto& e : dp) {
     for (const auto& f : e) {
-      if (f == INF) continue;
-      max_tmp = max(max_tmp, f);
+      if (f != std::numeric_limits<int>::max() )max_turn = std::max(max_turn, f);
+//      std::cout << std::setw(3) << std::setfill(' ') << ((f == std::numeric_limits<int>::max())?0:f) << ' ';
     }
+//    std::cout << '\n';
   }
-  cout << max_tmp << '\n';
+  std::cout << max_turn << '\n';
 }
