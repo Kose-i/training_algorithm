@@ -25,8 +25,7 @@ void solve() {
 	cin >> N;
   std::vector<std::vector<std::vector<double>>> dp(305, std::vector<std::vector<double>>(305, std::vector<double>(305, 0)));
   std::vector<int> a(3, 0);
-	for (size_t i = 0; i < N; i++)
-	{
+	for (size_t i = 0; i < N; i++) {
 		int b;
 		cin >> b;
 		if (b == 0) continue;
