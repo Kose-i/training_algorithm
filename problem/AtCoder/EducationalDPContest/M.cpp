@@ -1,66 +1,33 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 using ll = long long;
 #define rep(i, n) for(int i = 0;i < (n);++i)
 
-// auto mod int
-// https://youtu.be/L8grWxBlIZ4?t=9858
-// https://youtu.be/ERZuLAxZffQ?t=4807 : optimize
-// https://youtu.be/8uowVvQ_-Mo?t=1329 : division
-const int mod = 1000000007;
-struct mint {
-  ll x; // typedef long long ll;
-  mint(ll x=0):x((x%mod+mod)%mod){}
-  mint operator-() const { return mint(-x);}
-  mint& operator+=(const mint a) {
-    if ((x += a.x) >= mod) x -= mod;
-    return *this;
-  }
-  mint& operator-=(const mint a) {
-    if ((x += mod-a.x) >= mod) x -= mod;
-    return *this;
-  }
-  mint& operator*=(const mint a) {
-    (x *= a.x) %= mod;
-    return *this;
-  }
-  mint operator+(const mint a) const {
-    mint res(*this);
-    return res+=a;
-  }
-  mint operator-(const mint a) const {
-    mint res(*this);
-    return res-=a;
-  }
-  mint operator*(const mint a) const {
-    mint res(*this);
-    return res*=a;
-  }
-  mint pow(ll t) const {
-    if (!t) return 1;
-    mint a = pow(t>>1);
-    a *= a;
-    if (t&1) a *= *this;
-    return a;
-  }
+constexpr ll mod {1000000007};
+constexpr ll INF {-1};
 
-  // for prime mod
-  mint inv() const {
-    return pow(mod-2);
+ll answer(const ll& N, const ll& K, const std::vector<ll>& a) {
+  std::vector<std::vector<ll>> dp(N+1, std::vector<ll>(K+1, 0));
+  dp[0][0] = 1;
+  for (auto i = 0;i < N;++i) {
+    std::vector<ll> sum(K+2, 0);
+    for (auto j = 0;j <= K;++j) {
+      (sum[j+1] = (sum[j]+dp[i][j])) %= mod;
+    }
+    for (auto j = 0;j <= K;++j) {
+      (sum[j+1] = (sum[j]+dp[i][j])) %= mod;
+      (dp[i+1][j] = (sum[j+1] - sum[std::max(j-a[i], 0LL)] + mod)) %= mod;
+    }
   }
-  mint& operator/=(const mint a) {
-    return (*this) *= a.inv();
-  }
-  mint operator/(const mint a) const {
-    mint res(*this);
-    return res/=a;
-  }
-};
+  return dp[N][K];
+}
 
 int main(int argc, char** argv) {
-  int N, K;
+  ll N, K;
   std::cin >> N >> K;
-  std::vector<mint> a(N);
+  std::vector<ll> a(N);
   rep(i, N) std::cin >> a[i];
+  std::cout << answer(N, K, a) << '\n';
 }
