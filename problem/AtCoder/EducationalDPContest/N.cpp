@@ -1,37 +1,32 @@
 #include <iostream>
 #include <vector>
-#include <numeric>
 
-#include <iomanip>
+//#include <iomanip>
 
-using ll = long long;
-constexpr ll INF {100000000};
-
+using ll = unsigned long long;
 #define rep(i,n) for(int i = 0;i < (n);++i)
+#define drep(i,n) for(int i = (n)-1;i >= 0;--i)
+#define srep(i,s,t) for(int i = s;i < t;++i)
 
-ll answer(const int& l, const int& r, std::vector<std::vector<ll>>& dp, const std::vector<ll>& A) {
-  if (dp[l][r] >= 0) return dp[l][r];
-  dp[l][r] = INF;
-  ll sum_cost = std::accumulate(A.begin()+l, A.begin()+r, 0);
-  for (auto i = l+1;i < r-1;++i) {
-    //dp[l][r] = std::min(dp[l][r], dp[l][i]+dp[i+1][r]+sum_cost);
-    dp[l][r] = std::min(dp[l][r], answer(l,i,dp,A)+answer(i+1,r,dp,A)+sum_cost);
-  }
-  return dp[l][r];
-}
+constexpr ll INF = 1001002003004005006ll;
 
-int main(int argc, char** argv) {
-  int N;
-  std::cin >> N;
-  std::vector<ll> A(N);
-  rep(i,N) std::cin >> A[i];
-  std::vector<std::vector<ll>> dp(N+1, std::vector<ll>(N+1, -1));
-  rep(i,N+1) dp[i][i] = 0;
-  std::cout << answer(1, N, dp, A) << '\n';
-  for (const auto& e : dp) {
-    for (const auto& f : e) {
-      std::cout << std::setw(10) << std::setfill(' ') << f << ' ';
+int main() {
+  int n;
+  std::cin >> n;
+  std::vector<int> a(n);
+  rep(i,n) std::cin >> a[i];
+  std::vector<ll> s(n+1);
+  s[0] = 0;
+  rep(i,n) s[i+1] = a[i]+s[i];
+
+  std::vector<std::vector<ll>> dp(n, std::vector<ll>(n,INF));
+  drep(l,n) srep(r, l, n) {
+    if (l == r) dp[l][r] = 0;
+    else {
+      srep(k,l,r) {
+        dp[l][r] = std::min(dp[l][r], dp[l][k]+dp[k+1][r]+(s[r+1]-s[l]));
+      }
     }
-    std::cout << '\n';
   }
+  std::cout << dp[0][n-1] << '\n';
 }
