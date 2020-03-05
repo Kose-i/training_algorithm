@@ -62,4 +62,21 @@ int main(int argc, char** argv) {
   std::cin >> N;
   std::vector<std::vector<char>> a(N, std::vector<char>(N));
   rep(i, N) rep(j, N) std::cin >> a[i][j];
+
+  int n = 1<<N;
+  std::vector<mint> dp(n, 0);
+  dp[0] = 1;
+
+  std::vector<int> bc(n, 0);
+  rep(i,n) {
+    bc[i] = bc[i/2] + (i%2);
+  }
+
+  rep(i, n-1) {
+    int s = bc[i];
+    rep(j,n) {
+      if ()
+    }
+  }
+  std::cout << dp[n-1] << '\n';
 }

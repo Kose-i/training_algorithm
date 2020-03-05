@@ -1,26 +1,35 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <cmath>
 
-struct Status{
+struct Node_Status{
   int have_money;
   int time_now;
-}
+};
+struct Path{
+  int cost_money;
+  int cost_time;
+};
+constexpr int cost_time_INF {100000000};
 
-unsigned answer(const int& country_size, const int& now_money, const int& path_size, const std::vector<int>& from_path, const std::vector<int>& to_path, const std::vector<int>& cost, const std::vector<int>& time) {
-  std::vector<std::vector<Status>> node(country_size);
-  /*ダイクストラ法*/
+int answer(const int& country_size, const int& max_money, const int& path_size, const std::vector<int>& from_path, const std::vector<int>& to_path, const std::vector<int>& cost, const std::vector<int>& time) {
+
+  std::vector<std::vector<int>> dp(country_size, std::vector<int>(country_size, 0));
+  for (auto i = 0;i < path_size;++i) {
+    dp[from_path[i] - 1][to_path[i] - 1] = cost[i];
+  }
   for (auto i = 0;i < country_size;++i) {
     for (auto j = 0;j < country_size;++j) {
-      if (i == j) continue;
       for (auto k = 0;k < country_size;++k) {
-        if (k == i || k == j) continue;
-        for (const auto& e : node[i][k]) {
-        //  node[i][j].push_back(e+ path[k][j]);
-        }
+        dp[i][j] = std::min(dp[i][j], dp[i][k] + dp[k][j]);
       }
     }
   }
+  if (max_money < dp[0][country_size-1]) {
+    return -1;
+  }
+  return dp[0][country_size-1];
 }
 int main(int argc, char** argv) {
   int N, C, V;

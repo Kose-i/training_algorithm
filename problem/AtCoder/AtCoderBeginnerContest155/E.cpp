@@ -1,36 +1,31 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <cmath>
+#include <algorithm>
 
-using ull = unsigned long long;
+#define chmin(x,y) x=std::min(x,y)
+
 using ll = long long;
+#define rep(i,n) for(int i = 0;i < (n);++i)
+constexpr ll INF {100000000};
 
 int main(int argc, char** argv) {
-  std::string N;
-  std::cin >> N;
-  ull N_size = N.size();
-  std::vector<ull> vec(10);
-  bool kuriagari = false;
-  for (ll i = N_size-1;i >= 0;--i) {
-    if (kuriagari == true) {
-      if (N[i] >= '5') {
-        ++vec['9' - N[i]];
-      } else {
-        kuriagari = false;
-        ++vec[N[i] - '0' + 1];
-      }
-    } else if (N[i] < '5') {
-      ++vec[N[i]-'0'];
-    } else {
-      kuriagari = true;
-      ++vec['9' - N[i] + 1];
+  std::string S;
+  std::cin >> S;
+  std::reverse(S.begin(), S.end());
+  S += '0';
+  ll S_size = S.size();
+  std::vector<std::vector<ll>> dp(S_size, std::vector<ll>(2, INF));
+  dp[0][0] = S[0] - '0' ;
+  dp[0][1] = 10 - (S[0] - '0');
+  for (auto i = 1;i < S_size;++i) {
+    ll x = S[i] - '0';
+    for (auto j = 0;j < 2;++j) {
+      x += j;
+      chmin(dp[i][0],dp[i-1][j]+x);
+      chmin(dp[i][1],dp[i-1][j]+(10-x));
     }
   }
-  ull answer {};
-  if (kuriagari == true) {
-    ++answer;
-  }
-  for (auto i = 0;i <= 9;++i) {
-    answer += vec[i]*i;
-  }
-  std::cout << answer << '\n';
+  std::cout << dp[S_size-1][0] << '\n';
 }
