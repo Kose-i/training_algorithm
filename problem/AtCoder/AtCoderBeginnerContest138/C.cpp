@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <iomanip>
+#include <algorithm>
 
 using namespace std;
 using ll = long long;
@@ -20,17 +22,10 @@ constexpr ll LLINF {1001002003004005006};//ll = 9*LLINF
 int main() {
   int N;
   cin >> N;
-  vector<ull> value(N);
-  rep(i,N) cin >> value[i];
-  vector<vector<double>> dp(N, vector<double>(N, 0));
-  rep(i,N) dp[i][i] = value[i];
-  drep(l,N) srep(r, l, N) {
-    if (l == r) dp[l][r] = value[l];
-    else {
-      srep(k,l,r) {
-        dp[l][r] = std::max(dp[l][r], (dp[l][k]+dp[k+1][r])/2.0);
-      }
-    }
-  }
-  std::cout << dp[0][N-1] << '\n';
+  vector<int> v(N);
+  rep(i, N) cin >> v[i];
+  std::sort(v.begin(), v.end());
+  double answer {static_cast<double>(v[0])};
+  srep(i,1,N) answer = (answer + v[i])/2;
+  std::cout << std::fixed << answer << '\n';
 }
