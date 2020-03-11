@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 using ll = long long;
@@ -16,55 +17,57 @@ constexpr ll LLINF {1001002003004005006};//ll = 9*LLINF
 
 #define maxs(x,y) (x=std::max(x,y))
 #define mins(x,y) (x=std::min(x,y))
+using P = std::pair<int, int>;
 
 int main() {
-  ll N;
-  std::cin >> N;
-  vector<vector<int>> A(N, vector<int>(N-1));
-  rep(i,N) rep(j,N-1) cin >> A[i][j];
-  ll day {};
-  bool is_ok = true;
-  for (day = 0;;++day) {
-    vector<int> vec(N, -1);
-    rep(i,N) {
-      rep(j,N-1) {
-        if (A[i][j] != -1) {
-          vec[i] = A[i][j];
-          break;
-        }
-      }
+  int n;
+  cin >> n;
+  vector<vector<int>> a(n, vector<int>(n-1));
+  rep(i,n) {
+    rep(j,n-1) {
+      cin >> a[i][j];
+      a[i][j]--;
     }
-    //vec
-    bool is_check = false;
-    vector<int> update_num;
-    rep(i,N) {
-      if (vec[i] == -1) {
-        continue;
-      } else if (i+1 == vec[vec[i] - 1]) {
-        update_num.push_back(i);
-      } else {
-        is_check = true;
-      }
+    std::reverse(a[i].begin(), a[i].end());
+  }
+  vector<P> q;
+  auto check = [&](int i) {
+    if (a[i].size() == 0) return;
+    int j = a[i].back();
+    if (a[j].size() == 0) return;
+    if (a[j].back() == i) {
+      P p(i,j);
+      if (p.second < p.first) swap(p.first, p.second);
+      q.push_back(p);
     }
-    if (is_check == false && update_num.size() == 0) break; // finish
-    //update
-    if (update_num.size() == 0) {
-      is_ok = false;
-      break;
-    } else {
-      for (const auto& i : update_num) {
-        rep(j,N-1) {
-          if (A[i][j] != -1) {
-            A[i][j] = -1;
-            break;
-          }
-        }
-      }
+  };
+  rep(i,n) {
+    check(i);
+  }
+  int day = 0;
+  while (q.size() > 0) {
+    day++;
+    sort(q.begin(), q.end());
+    q.erase(unique(q.begin(), q.end()), q.end());
+    vector<P> prevQ;
+    swap(prevQ, q);
+    for (P p : prevQ) {
+      int i = p.first, j = p.second;
+      a[i].pop_back();
+      a[j].pop_back();
+    }
+    for (P p : prevQ) {
+      int i = p.first, j = p.second;
+      check(i);
+      check(j);
     }
   }
-  if (is_ok == true) {
-    std::cout << day << '\n';
-  } else {
-    std::cout << "-1\n";
+  rep(i,n) {
+    if (a[i].size() != 0) {
+      puts("-1");
+      return 0;
+    }
   }
+  cout << day << endl;
+  return 0;
 }
