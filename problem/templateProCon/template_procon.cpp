@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -14,8 +15,15 @@ constexpr ll LLINF {1001002003004005006};//ll = 9*LLINF
 #define drep(i,n)   for(int i = (n)-1; i >= 0; --i)
 #define srep(i,s,t) for(int i = s; i < t;  ++i)
 
-#define maxs(x,y) (x=std::max(x,y))
-#define mins(x,y) (x=std::min(x,y))
+template<typename T>
+void maxs(T& x, T& y) {
+  x=std::max(x,y);
+}
+
+template<typename T>
+void mins(T& x, T& y) {
+  x=std::min(x,y);
+}
 
 int main() {
 }
