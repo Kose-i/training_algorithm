@@ -90,6 +90,10 @@ int main() {
 
   for (int i = 1;i <= K;++i) {
     //    answer += (N-K+1)c(i)*(K-1)C(i-1);
+    if (i > N-K+1 || i > K) { // cant make
+      cout << "0\n";
+      continue;
+    }
     mint answer = (factorial[N-K+1]*inv_factorial[i]*inv_factorial[N-K+1-i])*factorial[K-1]*inv_factorial[i-1]*inv_factorial[K-i];
     cout << answer.x << '\n';
   }
