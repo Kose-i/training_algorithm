@@ -10,6 +10,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 constexpr ll LLINF {1001002003004005006};//ll = 9*LLINF
+constexpr int INTINF {1000000000};//int = 2*INTINF
 
 #define  rep(i,n)   for(int i = 0; i < (n); ++i)
 #define rrep(i,n)   for(int i = 1; i <= (n); ++i)
