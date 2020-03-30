@@ -28,4 +28,6 @@ void mins(T& x, T& y) {
 }
 
 int main() {
+  int n;
+  cin >> n;
 }
