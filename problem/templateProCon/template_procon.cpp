@@ -28,6 +28,6 @@ void mins(T& x, T& y) {
 }
 
 int main() {
-  int n;
-  cin >> n;
+  ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 }
