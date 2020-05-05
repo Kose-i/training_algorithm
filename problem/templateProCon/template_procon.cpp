@@ -18,10 +18,18 @@ constexpr int INTINF {1000000000};//int = 2*INTINF
 #define srep(i,s,t) for(int i = s; i < t;  ++i)
 
 template<typename T>
+void maxs(T& x, T&& y) {
+  x=std::max(x,y);
+}
+template<typename T>
 void maxs(T& x, T& y) {
   x=std::max(x,y);
 }
 
+template<typename T>
+void mins(T& x, T&& y) {
+  x=std::min(x,y);
+}
 template<typename T>
 void mins(T& x, T& y) {
   x=std::min(x,y);
