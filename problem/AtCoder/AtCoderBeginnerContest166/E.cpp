@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <cmath>
 
 using namespace std;
@@ -40,6 +40,8 @@ struct Party{
   ull A;
 };
 
+using P=std::pair<int, int>;
+
 int main() {
   ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
@@ -48,7 +50,22 @@ int main() {
   cin >> N;
   vector<Party> Member(N);
   rep(i, N) {
-    A[i].number = i+1;
-    cin >> A[i].A;
+    Member[i].number = i+1;
+    cin >> Member[i].A;
   }
+
+  vector<P> X(N);
+  rep(i, N) {
+    X[i].first  = Member[i].number + Member[i].A;
+    X[i].second = Member[i].number - Member[i].A;
+  }
+
+  std::unordered_map<int, int> mp;
+  ull ans {};
+  rep(i, N) {
+    ans += mp[X[i].second];
+    ++mp[X[i].first];
+  }
+
+  cout << ans << '\n';
 }
