@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <cmath>
 
 using namespace std;
@@ -38,4 +38,28 @@ void mins(T& x, T& y) {
 int main() {
   ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
+
+  string S;
+  cin >> S;
+  int n = S.size();
+  vector<int> dp(n);
+  rep(i,n) {
+    if (i==0) dp[i] = S[0] - '0';
+    else dp[i] = (dp[i-1]*10+(S[i]-'0')) % 2019;
+  }
+  rep(i, n) {
+    cout << dp[i] << '\n';
+  }
+  std::unordered_map<int, int> mp;
+  mp[0] = 1;
+  rep(i,n) {
+    ++mp[dp[i]];
+  }
+
+  int ans {};
+  rep(i, 2020) {
+    int m = mp[i];
+    ans += (m*(m-1)/2);
+  }
+  cout << ans << '\n';
 }
