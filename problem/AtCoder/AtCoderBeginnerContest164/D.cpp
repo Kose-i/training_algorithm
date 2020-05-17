@@ -41,25 +41,22 @@ int main() {
 
   string S;
   cin >> S;
+  reverse(S.begin(), S.end());
   int n = S.size();
+  int x {1};
   vector<int> dp(n);
   rep(i,n) {
-    if (i==0) dp[i] = S[0] - '0';
-    else dp[i] = (dp[i-1]*10+(S[i]-'0')) % 2019;
-  }
-  rep(i, n) {
-    cout << dp[i] << '\n';
-  }
-  std::unordered_map<int, int> mp;
-  mp[0] = 1;
-  rep(i,n) {
-    ++mp[dp[i]];
+    if (i==0) dp[0] = S[0] - '0';
+    else dp[i] = (dp[i-1]+(S[i]-'0')*x) % 2019;
+    x = (x*10)%2019;
   }
 
   int ans {};
-  rep(i, 2020) {
-    int m = mp[i];
-    ans += (m*(m-1)/2);
+  std::unordered_map<int, int> mp;
+  mp[0] = 1;
+  rep(i,n) {
+    ans += mp[dp[i]];
+    ++mp[dp[i]];
   }
   cout << ans << '\n';
 }
