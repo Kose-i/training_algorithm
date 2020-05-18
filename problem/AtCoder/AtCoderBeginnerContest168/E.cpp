@@ -2,12 +2,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <cmath>
+//#include <numeric>
 
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
+
+ll gcd(ll a, ll b) {
+  if (a == 0) return b;
+  else if (b==0) return a;
+  return b?gcd(b,a%b):a;
+}
 
 constexpr ll LLINF {1001002003004005006};//ll = 9*LLINF
 constexpr int INTINF {1000000000};//int = 2*INTINF
@@ -34,7 +41,7 @@ template<typename T>
 void mins(T& x, T& y) {
   x=std::min(x,y);
 }
-
+using P = std::pair<ll, ll>;
 // auto mod int
 // https://youtu.be/L8grWxBlIZ4?t=9858
 // https://youtu.be/ERZuLAxZffQ?t=4807 : optimize
@@ -91,7 +98,6 @@ struct mint {
     return res/=a;
   }
 };
-using P = std::pair<ll, ll>;
 
 int main() {
   ios::sync_with_stdio(false);
@@ -99,15 +105,40 @@ int main() {
 
   int n;
   cin >> n;
-  vector<P> X(n);
+  int zero_cnt {};
+  map<P, P> mp;
   rep(i, n) {
-    cin >> X[i].first >> X[i].second;
+    ll x, y;
+    cin >> x >> y;
+    if (x==0 && y==0) {
+      ++zero_cnt;
+      continue;
+    }
+    ll g = gcd(x, y);
+    x /= g;
+    y /= g;
+    if (y < 0) x = -x, y = -y;
+    else if (y==0 && x<0) x = -x, y=-y;
+    bool rot90 = (x<=0);
+    if (rot90) {
+      ll tmp = x;
+      x = y; y = -tmp;
+    }
+    if (rot90) ++mp[{x, y}].first;
+    else ++mp[{x,y}].second;
   }
-  unordered_map<double, mint> mp;
-  mint ans {n*(n-1)/2};
-  rep(i,n) {
-    ans -= mp[X[i].first/(double)X[i].second];
-    mp[-X[i].second/(double)X[i].first] += 1;
+
+  mint ans = 1;
+  for (const auto& p : mp) {
+    int s = p.second.first;
+    int t = p.second.second;
+    mint now = 1;
+    now += mint(2).pow(s) - 1;
+    now += mint(2).pow(t) - 1;
+    ans *= now;
   }
-  cout << ans.x << '\n';
+  ans -= 1;
+
+  ans += zero_cnt;
+  cout << ans.x << endl;
 }
