@@ -35,17 +35,45 @@ void mins(T& x, T& y) {
   x=std::min(x,y);
 }
 
+struct query{
+  int a, b, c, d;
+};
+
+int get_value(const int& X_size, const vector<query>& X, const vector<int>& A) {
+  int ans {};
+  rep(i, X_size) {
+    if (A[X[i].b] - A[X[i].a] == X[i].c) {
+      ans += X[i].d;
+    }
+  }
+  return ans;
+}
+
+int check(const int& index, const int& n, const int& M, const int& X_size, const int& now_value, const vector<query>& X, vector<int> A) {
+  if (index == n) {
+    return get_value(X_size, X, A);
+  }
+  int ans {};
+  srep(i, now_value, M+1) {
+    A[index] = i;
+    maxs(ans, check(index+1, n, M, X_size, i, X, A));
+  }
+  return ans;
+}
 int main() {
   ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
   int N, M, Q;
   cin >> N >> M >> Q;
-  vector<int> A(Q);
-  vector<int> B(Q);
-  vector<int> C(Q);
-  vector<int> D(Q);
-  rep(i, Q) cin >> A[i] >> B[i] >> C[i] >> D[i];
+  vector<query> X(Q);
+  rep(i, Q) {
+    cin >> X[i].a >> X[i].b >> X[i].c >> X[i].d;
+    --X[i].a;
+    --X[i].b;
+  }
 
-
+  vector<int> A(N, 1);
+  int ans = check(0, N, M, Q, 1,X, A);
+  cout << ans << '\n';
 }
