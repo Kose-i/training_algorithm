@@ -3,9 +3,10 @@
 競技プログラミング用の自分用のライブラリ
 
 |---|---|
+---|---
+|Segment tree|
 
 # TODO
-- Segment tree
 - Union-Find
 - linked-list
 - dp_bit
