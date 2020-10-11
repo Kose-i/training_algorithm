@@ -5,8 +5,8 @@
 |---|---|
 ---|---
 |Segment tree|
+|Union-Find|
 
 # TODO
-- Union-Find
 - linked-list
 - dp_bit
