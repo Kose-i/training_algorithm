@@ -4,7 +4,6 @@
 #include <string>
 #include <map>
 #include <cmath>
-#include <numeric>
 
 using namespace std;
 using ll = long long;
@@ -36,36 +35,33 @@ void mins(T& x, T& y) {
   x=std::min(x,y);
 }
 
-struct Bridge_type {
-  int l, v;
-};
-bool operator<(Bridge_type& left, Bridge_type& right) {
-  return left.l < right.l;
-}
-
 int main() {
   ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int n, m;
-  cin >> n >> m;
-  vector<int> w(n);
-  rep(i, n) cin >> w[i];
-  std::sort(w.rbegin(), w.rend());
-
-  vector<Bridge_type> bridge(m);
-  rep(i, m) cin >> bridge[i].l >> bridge[i].v;
-  std::sort(bridge.begin(), bridge.end());
-
-  //std::vector<int> v(n-1, 0);
-  //std::iota(v.begin(), v.end(), 1);
-
-  //do {
-  //  std::vector<int> number(n);
-  //  number[0] = 0;
-  //  for (auto i = 0;i < n-1;++i) {
-  //    number[i+1] = v[i];
-  //  }
-  //  vector<int> length(n);
-  //} while (std::next_permutation(v.begin(), v.end()));
+  int n;
+  cin >> n;
+  const std::string target_s{"atcoder"};
+  vector<string> t(n);
+  rep(i, n) cin >> t[i];
+  rep(i, n) {
+    if (std::all_of(t[i].begin(), t[i].end(), [](auto& e){return e=='a';})) {
+      std::cout << "-1\n";
+    } else if (target_s < t[i]) {
+      std::cout << "0\n";
+    } else {
+      int cnt {};
+      for (const auto& e : t[i]) {
+        if (e == 'a') {
+          ++cnt;
+        } else if (e > 't') {
+          --cnt;
+          break;
+        } else {
+          break;
+        }
+      }
+      cout << cnt << '\n';
+    }
+  }
 }
