@@ -21,7 +21,7 @@ class UnionFind {
       if (data[x] > data[y]) { // swap x<->y
         int tmp = x;
         x = y;
-        y = x;
+        y = tmp;
       }
       //data[x] += data[y];
       data[y] = x;
