@@ -45,22 +45,6 @@ char winner(const char& l, const char& r) {
   return '.';
 }
 
-char search(const int& k, const int& n, std::vector<std::vector<char>>& dp, const ll& idx) {
-  if (dp[k][idx%n] != '.') return dp[k][idx%n];
-  return dp[k][idx%n] = winner(search(k-1, n, dp, 2*idx%n), search(k-1, n, dp, (2*idx+1)%n));
-}
-
-char ans_find(const int& k, const int& n, const std::string& s) {
-  std::vector<std::vector<char>> dp(k, std::vector<char>(n, '.'));
-  rep(i, n) {
-    dp[0][i] = s[i];
-  }
-  char l = search(k-1, n, dp, 0);
-  char r = search(k-1, n, dp, 1);
-
-  return winner(l, r);
-}
-
 int main() {
   ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
@@ -70,7 +54,17 @@ int main() {
   std::string s;
   cin >> s;
   s += s;
-  n *= 2;
 
-  cout << ans_find(k, n, s) << '\n';
+  std::string target_s {s};
+
+  for (auto i = 0;i < k;++i) {
+    int new_s_size {static_cast<int>(target_s.size())};
+    std::string new_s{};
+    for (auto j = 0;j < new_s_size;++j) {
+      new_s += winner(target_s[2*j%n], target_s[(2*j + 1)%n]);
+    }
+    target_s = new_s;
+    //std::cout << target_s << '\n';
+  }
+  cout << target_s[0] << '\n';
 }
