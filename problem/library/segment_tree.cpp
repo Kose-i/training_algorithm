@@ -2,6 +2,10 @@
 #include <vector>
 #include <functional>
 
+/*
+Build  O(n log n)
+Search O(log n)
+*/
 template<typename T>
 class segment_tree {
 
