@@ -1,4 +1,4 @@
-#This is prime_number
+# This is prime_number
 
-Sieve of Eratosthenes
-Miller-Rabin primality test
+- Sieve of Eratosthenes
+- Miller-Rabin primality test
