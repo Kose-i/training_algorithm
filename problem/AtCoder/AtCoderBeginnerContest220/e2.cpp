@@ -44,18 +44,21 @@ int main() {
 
   int n, d;
   cin >> n >> d;
-  vector<ll> f(n+1, 0);
-  vector<ll> g(n+1, 0);
   vector<ll> two(n+1, 0);
   two[0] = 1;
   for (int i=1;i<=n;++i) two[i] = (two[i-1]*2) % ll_mod;
-  for (int i=1;i<=n;++i) {
-    int l = i - 1;
-    int r = d-(i-1);
-    if (0<= r && r<=l) g[i] = (g[i-1] + two[max(l-1, 0)] * two[max(r-1, 0)] * ((l!=r)?2:1)) % ll_mod;
-    else g[i] = g[i-1];
-  }
 
-  for (int i=1;i<=n;++i) f[i] = (2*f[i-1] + g[i]) % ll_mod;
-  cout << (f[n]*2)%ll_mod << '\n';
+  ll ans {};
+  for (int i=0;i<=d;++i) {
+    int l = i;
+    int r = d - l;
+    if (n <= l) continue;
+    if (n <= r) continue;
+
+    ans += ((two[max(l-1, 0)]*two[max(r-1, 0)])%ll_mod)*(two[n-max(l,r)] - 1) % ll_mod;
+    ans %= ll_mod;
+  }
+  ans *= 2;
+  ans %= ll_mod;
+  cout << ans << '\n';
 }
