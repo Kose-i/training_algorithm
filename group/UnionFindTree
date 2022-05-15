@@ -1,4 +1,7 @@
 struct UnionFind {
+   vector<int> vec;
+   int n_;
+   
    UnionFind(const int& n) : n_(n), vec(n) {
      for (int i=0;i<n;++i) vec[i] = i;
    }
